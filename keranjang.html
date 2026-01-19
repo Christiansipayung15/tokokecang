@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Kecang Cake</title>
+    <link rel="stylesheet" href="dashboard-style.css">
+    <style>
+        .cart-container {
+            margin-top: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .cart-table th, .cart-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-table th { background-color: #4a342e; color: white; }
+        .discount-text { color: #d81b60; font-weight: bold; font-size: 0.9em; }
+        .action-buttons { display: flex; gap: 8px; }
+        
+        .btn-order {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-remove {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .total-section {
+            text-align: right;
+            border-top: 2px solid #f8f8f8;
+            padding-top: 20px;
+        }
+        .total-price {
+            font-size: 28px;
+            color: #4a342e;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="dashboard-container">
+        <main class="main-content">
+            <header>
+                <h1>🛒 Keranjang Saya</h1>
+                <a href="dashboard.html" style="text-decoration:none; color:#d81b60; font-weight:bold;">← Kembali Belanja</a>
+            </header>
+
+            <div class="cart-container">
+                <table class="cart-table" id="cartTable">
+                    <thead>
+                        <tr>
+                            <th>Menu</th>
+                            <th>Harga</th>
+                            <th>Diskon</th>
+                            <th>Subtotal</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartItems"></tbody>
+                </table>
+
+                <div id="emptyMessage" style="display:none; text-align:center; padding:50px;">
+                    <h3>Keranjang Kosong</h3>
+                    <a href="dashboard.html">Cari Kue Sekarang</a>
+                </div>
+
+                <div class="total-section" id="footerCart">
+                    <p>Total Bayar:</p>
+                    <div class="total-price" id="grandTotal">Rp 0</div>
+                    <button class="buy-btn" onclick="checkoutSemua()" style="width: auto; padding: 15px 50px;">
+                        Pesan Semua
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function loadCart() {
+            const cartItems = JSON.parse(localStorage.getItem('keranjangKecang')) || [];
+            const tableBody = document.getElementById('cartItems');
+            const cartTable = document.getElementById('cartTable');
+            const emptyMessage = document.getElementById('emptyMessage');
+            const footerCart = document.getElementById('footerCart');
+            let grandTotal = 0;
+
+            tableBody.innerHTML = '';
+
+            if (cartItems.length === 0) {
+                cartTable.style.display = 'none';
+                emptyMessage.style.display = 'block';
+                footerCart.style.display = 'none';
+                return;
+            }
+
+            cartItems.forEach((item, index) => {
+                let diskon = item.harga > 100000 ? item.harga * 0.1 : 0;
+                let subtotal = item.harga - diskon;
+                grandTotal += subtotal;
+
+                tableBody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.nama}</strong></td>
+                        <td>Rp ${item.harga.toLocaleString('id-ID')}</td>
+                        <td class="discount-text">-${diskon > 0 ? 'Rp ' + diskon.toLocaleString('id-ID') : '0'}</td>
+                        <td><strong>Rp ${subtotal.toLocaleString('id-ID')}</strong></td>
+                        <td class="action-buttons">
+                            <button class="btn-order" onclick="pesanSatu(${index})">Pesan</button>
+                            <button class="btn-remove" onclick="hapusSatu(${index})">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('grandTotal').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+        }
+
+        // FUNGSI PESAN SATU (LANGSUNG KE PESANAN.HTML)
+        function pesanSatu(index) {
+            let cartItems = JSON.parse(localStorage.getItem('keranjangKecang')) || [];
+            let itemPesanan = cartItems[index];
+
+            // Konfirmasi
+            if (confirm("Lanjutkan pesanan untuk " + itemPesanan.nama + "?")) {
+                // Hapus dari keranjang
+                cartItems.splice(index, 1);
+                localStorage.setItem('keranjangKecang', JSON.stringify(cartItems));
+                
+                // Beri alert lalu pindah halaman
+                alert("Pesanan berhasil dibuat! Menuju halaman pesanan...");
+                window.location.href = "pesanan.html";
+            }
+        }
+
+        function hapusSatu(index) {
+            let cartItems = JSON.parse(localStorage.getItem('keranjangKecang')) || [];
+            cartItems.splice(index, 1);
+            localStorage.setItem('keranjangKecang', JSON.stringify(cartItems));
+            loadCart();
+        }
+
+        // FUNGSI PESAN SEMUA (LANGSUNG KE PESANAN.HTML)
+        function checkoutSemua() {
+            if (confirm("Pesan semua item di keranjang?")) {
+                localStorage.removeItem('keranjangKecang');
+                alert("Semua pesanan berhasil dibuat!");
+                window.location.href = "pesanan.html";
+            }
+        }
+
+        window.onload = loadCart;
+    </script>
+</body>
+</html>

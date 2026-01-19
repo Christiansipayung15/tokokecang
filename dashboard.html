@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Toko Kue</title>
+    <link rel="stylesheet" href="dashboard-style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo"><u>Kecang cake</u></div>
+            <ul>
+                <li><a href="dashboard.html" class="active">Beranda</a></li>
+                <li><a href="pesanan.html">Pesanan Saya</a></li>
+                <li><a href="profil.html">Profil Saya</a></li>
+                <li>
+                    <a href="biodata.html" class="logout" onclick="return confirmLogout()">Keluar / logout</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <h1>Selamat Datang, Pelanggan KECANG CAKE!</h1>
+                <a href="keranjang.html" class="cart-menu">
+                    🛒 Keranjang <span id="cart-count" class="cart-badge">(0)</span>
+                </a>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Menu Daftar</h3>
+                    <p>50 MENU</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pesanan</h3>
+                    <p>0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Ranting🌟</h3>
+                    <p>1.250</p>
+                </div>
+            </section>
+
+            <h2>Menu Tersedia</h2>
+            <section class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">🎂</div>
+                    <h3>Red Velvet Cake</h3>
+                    <p>Rp 150.000</p>
+                    <button class="buy-btn">Tambah ke Keranjang</button>
+                    <a href="pesanan.html" class="btn-view-order">Pesan</a>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🥐</div>
+                    <h3>Butter Croissant</h3>
+                    <p>Rp 18.000</p>
+                    <button class="buy-btn">Tambah ke Keranjang</button>
+                    <a href="pesanan.html" class="btn-view-order">Pesan</a>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🧁</div>
+                    <h3>Cupcake Cokelat</h3>
+                    <p>Rp 15.000</p>
+                    <button class="buy-btn">Tambah ke Keranjang</button>
+                    <a href="pesanan.html" class="btn-view-order">Pesan</a>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🍪</div>
+                    <h3>Choco Chip Cookie</h3>
+                    <p>Rp 12.000</p>
+                    <button class="buy-btn">Tambah ke Keranjang</button>
+                    <a href="pesanan.html" class="btn-view-order">Pesan</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. FUNGSI TAMBAH KERANJANG ---
+        const beliButtons = document.querySelectorAll('.buy-btn');
+        beliButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.product-card');
+                const namaKue = card.querySelector('h3').innerText;
+                const hargaTeks = card.querySelector('p').innerText;
+                const harga = parseInt(hargaTeks.replace(/[^0-9]/g, ''));
+
+                let keranjang = JSON.parse(localStorage.getItem('keranjangKecang')) || [];
+                keranjang.push({ nama: namaKue, harga: harga });
+                localStorage.setItem('keranjangKecang', JSON.stringify(keranjang));
+                
+                alert(namaKue + " berhasil ditambah! Menuju keranjang...");
+                window.location.href = "keranjang.html"; 
+            });
+        });
+
+        // --- 2. FUNGSI LOGOUT MANUAL ---
+        function confirmLogout() {
+            let yakin = confirm("Apakah Anda yakin ingin keluar?");
+            if (yakin) {
+                localStorage.clear(); 
+                sessionStorage.clear();
+                alert("Anda telah berhasil keluar.");
+                return true; 
+            }
+            return false; 
+        }
+
+        // --- 3. FUNGSI AUTO-LOGOUT (1 MENIT) ---
+        const timeoutInMiliseconds = 60000; // 1 menit
+        let timeoutId;
+
+        function autoLogout() {
+           
+            localStorage.clear(); 
+            sessionStorage.clear();
+            window.location.href = "biodata.html"; 
+        }
+
+        function resetTimer() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(autoLogout, timeoutInMiliseconds);
+        }
+
+        // Monitor aktivitas pengguna di seluruh dokumen
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onmousedown = resetTimer; 
+        document.onkeypress = resetTimer;
+        document.ontouchmove = resetTimer;
+        document.onscroll = resetTimer;
+    </script>
+
+</body>
+</html>

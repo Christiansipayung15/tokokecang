@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Menu - Kecang Cake</title>
+    <link rel="stylesheet" href="dashboard-style.css">
+    <style>
+        .form-container { background: white; padding: 30px; border-radius: 15px; max-width: 500px; margin: 50px auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>➕ Tambah Menu Baru</h2>
+        <div class="form-group">
+            <label>Nama Kue:</label>
+            <input type="text" id="menuNama" placeholder="Contoh: Brownies Kukus">
+        </div>
+        <div class="form-group">
+            <label>Harga (Rp):</label>
+            <input type="number" id="menuHarga" placeholder="Contoh: 50000">
+        </div>
+        <div class="form-group">
+            <label>Ikon Kue:</label>
+            <select id="menuIkon">
+                <option value="🎂">🎂 Cake</option>
+                <option value="🥐">🥐 Croissant</option>
+                <option value="🧁">🧁 Cupcake</option>
+                <option value="🍪">🍪 Cookie</option>
+                <option value="🍞">🍞 Roti</option>
+            </select>
+        </div>
+        <button class="buy-btn" onclick="simpanMenuBaru()" style="width: 100%;">Simpan Menu</button>
+        <br><br>
+        <a href="dashboard.html" style="text-decoration:none; color:#d81b60;">← Kembali ke Dashboard</a>
+    </div>
+
+    <script>
+        function simpanMenuBaru() {
+            const nama = document.getElementById('menuNama').value;
+            const harga = document.getElementById('menuHarga').value;
+            const ikon = document.getElementById('menuIkon').value;
+
+            if (nama && harga) {
+                // Ambil data menu yang sudah ada
+                let daftarMenu = JSON.parse(localStorage.getItem('menuKecang')) || [];
+                
+                // Tambah menu baru
+                daftarMenu.push({
+                    nama: nama,
+                    harga: parseInt(harga),
+                    ikon: ikon
+                });
+
+                // Simpan kembali
+                localStorage.setItem('menuKecang', JSON.stringify(daftarMenu));
+                alert("Menu " + nama + " berhasil ditambahkan!");
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Harap isi semua data!");
+            }
+        }
+    </script>
+</body>
+</html>

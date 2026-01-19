@@ -1,0 +1,113 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    /* Background menggunakan gradien warna pastel yang hangat */
+    background: linear-gradient(135deg, #f5d6ba 0%, #f2a6b4 100%);
+    /* Atau gunakan gambar (uncomment baris di bawah jika ingin pakai gambar) */
+    /* background: url('https://images.unsplash.com/photo-1517433670267-08bbd4be890f?q=80&w=1600') no-repeat center center fixed; */
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.9); /* Transparansi sedikit */
+    backdrop-filter: blur(10px); /* Efek blur kaca */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+h2 {
+    color: #4a342e;
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+p {
+    text-align: center;
+    color: #8d6e63;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a342e;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #d81b60;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    margin-bottom: 25px;
+    color: #757575;
+}
+
+.options a {
+    color: #d81b60;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(to right, #d81b60, #ad1457);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(216, 27, 96, 0.3);
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(216, 27, 96, 0.4);
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #757575;
+}
+
+.register-link a {
+    color: #d81b60;
+    text-decoration: none;
+    font-weight: bold;
+}

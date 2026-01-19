@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Kecang Cake</title>
+    <link rel="stylesheet" href="dashboard-style.css">
+    <style>
+        /* Style untuk Modal (Pop-up Edit) */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-content h2 { margin-bottom: 20px; color: #4a342e; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #4a342e; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-save { background-color: #d81b60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.3s; }
+        .btn-save:hover { background-color: #ad1457; }
+        .btn-cancel { background-color: #eee; color: #333; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; }
+        
+        /* Tambahan untuk menyelaraskan dengan dashboard */
+        .profile-info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #d81b60;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin-top: 20px;
+        }
+        .profile-info-card p { margin: 15px 0; font-size: 1.1em; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo"><u>Kecang cake</u></div>
+            <ul>
+                <li><a href="dashboard.html">Beranda</a></li>
+                <li><a href="pesanan.html">Pesanan Saya</a></li>
+                <li><a href="profil.html" class="active">Profil Saya</a></li>
+                <li><a href="biodata.html" class="logout" onclick="return confirmLogout()">Keluar</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <h1>My Profile</h1>
+                <a href="dashboard.html" style="text-decoration:none; color:#d81b60; font-weight:bold;">← Kembali</a>
+            </header>
+
+            <div class="profile-info-card">
+                <p><strong>Nama:</strong> <span id="displayNama">Memuat...</span></p>
+                <p><strong>Username:</strong> <span id="displayEmail">Memuat...</span></p>
+                <p><strong>Alamat:</strong> <span id="displayAlamat">Belum diatur</span></p>
+             
+                <button class="buy-btn" id="btnEdit" style="margin-top:20px; width: 100%;">Edit Profil</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>Ubah Data Profil</h2>
+            <div class="form-group">
+                <label>Nama Baru:</label>
+                <input type="text" id="inputNama">
+            </div>
+            <div class="form-group">
+                <label>Username (Email) Baru:</label>
+                <input type="email" id="inputEmail">
+            </div>
+            <div class="form-group">
+                <label>Alamat Baru:</label>
+                <input type="text" id="inputAlamat">
+            </div>
+            <button class="btn-save" onclick="simpanProfil()">Simpan Perubahan</button>
+            <button class="btn-cancel" onclick="tutupModal()">Batal</button>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('editModal');
+        const btnEdit = document.getElementById('btnEdit');
+
+        // 1. Fungsi untuk memuat data dari LocalStorage saat halaman dibuka
+        function muatDataProfil() {
+            // Ambil data, jika tidak ada gunakan data default
+            const profil = JSON.parse(localStorage.getItem('profilKecang')) || {
+                nama: "Farel",
+                email: "farel1@gmail.com",
+                alamat: "Belum diatur"
+            };
+
+            document.getElementById('displayNama').innerText = profil.nama;
+            document.getElementById('displayEmail').innerText = profil.email;
+            document.getElementById('displayAlamat').innerText = profil.alamat;
+        }
+
+        // 2. Buka Modal & Isi input dengan data saat ini
+        btnEdit.onclick = function() {
+            document.getElementById('inputNama').value = document.getElementById('displayNama').innerText;
+            document.getElementById('inputEmail').value = document.getElementById('displayEmail').innerText;
+            document.getElementById('inputAlamat').value = document.getElementById('displayAlamat').innerText;
+            modal.style.display = "block";
+        }
+
+        function tutupModal() {
+            modal.style.display = "none";
+        }
+
+        // 3. Simpan Data ke LocalStorage
+        function simpanProfil() {
+            const namaBaru = document.getElementById('inputNama').value;
+            const emailBaru = document.getElementById('inputEmail').value;
+            const alamatBaru = document.getElementById('inputAlamat').value;
+
+            if(namaBaru && emailBaru && alamatBaru) {
+                // Simpan ke objek
+                const dataBaru = {
+                    nama: namaBaru,
+                    email: emailBaru,
+                    alamat: alamatBaru
+                };
+
+                // Simpan ke LocalStorage agar permanen
+                localStorage.setItem('profilKecang', JSON.stringify(dataBaru));
+                
+                // Update tampilan tanpa refresh
+                muatDataProfil();
+                
+                alert("Profil berhasil diperbarui!");
+                tutupModal();
+            } else {
+                alert("Harap isi semua kolom!");
+            }
+        }
+
+        // Tutup modal jika klik di luar area modal
+        window.onclick = function(event) {
+            if (event.target == modal) { tutupModal(); }
+        }
+
+        function confirmLogout() {
+            return confirm("Apakah Anda yakin ingin keluar?");
+        }
+
+        // Jalankan pemuatan data saat start
+        window.onload = muatDataProfil;
+    </script>
+</body>
+</html>

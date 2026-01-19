@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Saya - Kecang Cake</title>
+    <link rel="stylesheet" href="dashboard-style.css">
+    <style>
+        .order-container {
+            margin-top: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-table th, .order-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .order-table th {
+            background-color: #4a342e;
+            color: white;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            background-color: #fff9c4;
+            color: #fbc02d; /* Warna kuning untuk status Diproses */
+        }
+        .empty-order {
+            text-align: center;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo"><u>Kecang cake</u></div>
+            <ul>
+                <li><a href="dashboard.html">Beranda</a></li>
+                <li><a href="pesanan.html" class="active">Pesanan Saya</a></li>
+                <li><a href="profil.html">Profil Saya</a></li>
+                <li><a href="login.html" class="logout" onclick="return confirmLogout()">Keluar</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <h1>📋 Daftar Pesanan Saya</h1>
+            </header>
+
+            <div class="order-container">
+                <table class="order-table" id="orderTable">
+                    <thead>
+                        <tr>
+                            <th>ID Pesanan</th>
+                            <th>Menu</th>
+                            <th>Harga</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderList">
+                        </tbody>
+                </table>
+
+                <div id="emptyOrderMessage" class="empty-order" style="display:none;">
+                    <h3>Belum ada pesanan aktif 🧐</h3>
+                    <p>Silakan pilih menu favorit Anda di Beranda.</p>
+                    <br>
+                    <a href="dashboard.html" class="buy-btn" style="text-decoration:none;">Pesan Sekarang</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function loadOrders() {
+            // Ambil data dari localStorage dengan kunci 'daftarPesanan'
+            const orders = JSON.parse(localStorage.getItem('daftarPesanan')) || [];
+            const orderList = document.getElementById('orderList');
+            const orderTable = document.getElementById('orderTable');
+            const emptyMessage = document.getElementById('emptyOrderMessage');
+
+            orderList.innerHTML = '';
+
+            if (orders.length === 0) {
+                orderTable.style.display = 'none';
+                emptyMessage.style.display = 'block';
+                return;
+            }
+
+            orderTable.style.display = 'table';
+            emptyMessage.style.display = 'none';
+
+            // Tampilkan setiap pesanan dalam tabel
+            orders.forEach(order => {
+                orderList.innerHTML += `
+                    <tr>
+                        <td><strong>${order.id}</strong></td>
+                        <td>${order.nama}</td>
+                        <td>Rp ${order.harga.toLocaleString('id-ID')}</td>
+                        <td><span class="status-badge">${order.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function confirmLogout() {
+            if (confirm("Apakah Anda yakin ingin keluar?")) {
+                localStorage.clear();
+                return true;
+            }
+            return false;
+        }
+
+        // Jalankan fungsi saat halaman dimuat
+        window.onload = loadOrders;
+    </script>
+</body>
+</html>
